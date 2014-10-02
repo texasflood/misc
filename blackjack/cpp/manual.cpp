@@ -26,13 +26,26 @@ int main()
             deck.push_back ((i > 10) ? 10 : i);
         }
     }
-    playerCards.push_back(getCard(deck));
-    playerCards.push_back(getCard(deck));
-    dealerCards.push_back(getCard(deck));
+    int randomCard;
+    std::cout << "Enter player card 1:" << std::endl;
+    std::cin >> randomCard;
+    playerCards.push_back(randomCard);
+    vectorPopValue (randomCard, deck);
+
+    std::cout << "Enter player card 2:" << std::endl;
+    std::cin >> randomCard;
+    playerCards.push_back(randomCard);
+    vectorPopValue (randomCard, deck);
+    std::cout << "Enter dealer card 1:" << std::endl;
+    std::cin >> randomCard;
+    dealerCards.push_back(randomCard);
+    vectorPopValue (randomCard, deck);
+
     std::cout << "Player Cards:" << std::endl;
     printVector (playerCards);
     std::cout << "Dealer Cards:" << std::endl;
     printVector (dealerCards);
+
     double probValue = 1;
     bool gameFinished = false;
     while (!gameFinished)
@@ -40,9 +53,10 @@ int main()
         gameFinished = !(shouldIHit (deck, playerCards, dealerCards));
         if (!gameFinished)
         {
-            int randomCard = getCard(deck);
-            std::cout << "Hit me!" << std::endl;
-            std::cout << "Player gets dealt a " << randomCard << std::endl;
+            int randomCard;
+            std::cout << "Player calls for hit, enter next card" << std::endl;
+            std::cin >> randomCard;
+            vectorPopValue (randomCard, deck);
             playerCards.push_back (randomCard);
             if (vectorSum (playerCards) > 21)
             {
@@ -52,8 +66,6 @@ int main()
         }
     }
     
-    
-    int winner = whoWins (playerCards, dealerCards);
     return 0;
 }
 
