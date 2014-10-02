@@ -2,13 +2,16 @@
 #include <random>
 #include <vector>
 bool hitMe (std::vector<int> deck, std::vector<int> playerCards, std::vector<int> dealerCards);
-void whatHappens (std::vector<int> deck, std::vector<int> playerCards, std::vector<int> dealerCards, double& probValue, double& losingProb, double& winningProb);
+void whatHappens (std::vector<int> deck, std::vector<int> playerCards, std::vector<int> dealerCards, double& headProbValue);
 double probOfCard (int card, std::vector<int> deck);
 int vectorSum (std::vector<int> inputVector);
 void vectorPopValue (int popValue, std::vector<int>& theVector);
 int whoWins (std::vector<int> playerCards, std::vector<int> dealerCards);
 int getCard (std::vector<int>& deck);
 void printVector (std::vector<int> theVector);
+
+double losingProb = 0;
+double winningProb = 0;
 
 int main()
 {
@@ -30,12 +33,9 @@ int main()
     printVector (playerCards);
     std::cout << "Dealer Cards:" << std::endl;
     printVector (dealerCards);
-
     double probValue = 1;
-    double winningProb = 0;
-    double losingProb = 0;
 
-    whatHappens (deck, playerCards, dealerCards, probValue, losingProb, winningProb);
+    whatHappens (deck, playerCards, dealerCards, probValue);
     std::cout << "Losing probability: " << losingProb << std::endl;
     std::cout << "Winning probability: " << winningProb << std::endl;
 
@@ -49,12 +49,13 @@ bool hitMe (std::vector<int> deck, std::vector<int> playerCards, std::vector<int
     bool gameEnded = false;
 }
 
-void whatHappens (std::vector<int> deck, std::vector<int> playerCards, std::vector<int> dealerCards, double& probValue, double& losingProb, double& winningProb)
+void whatHappens (std::vector<int> deck, std::vector<int> playerCards, std::vector<int> dealerCards, double& headProbValue)
 {
     std::cout << "In what happens" << std::endl;
     for (int i = 1; i < 11; i++)
     {
-        probValue *= probOfCard (i, deck);
+        double probValue = headProbValue * probOfCard (i, deck);
+        std::cout << "Prob val: " << probValue << std::endl;
         std::vector<int> modifiedDealerCards = std::vector<int>(dealerCards.begin(), dealerCards.end());
         modifiedDealerCards.push_back(i);
         vectorPopValue (i, deck);
@@ -67,11 +68,11 @@ void whatHappens (std::vector<int> deck, std::vector<int> playerCards, std::vect
         int winner = whoWins (playerCards, modifiedDealerCards);
         if (winner == 0)
         {
-            whatHappens (deck, playerCards, modifiedDealerCards, probValue, losingProb, winningProb);
+            //whatHappens (deck, playerCards, modifiedDealerCards, probValue);
         }
         else if (winner == 1)
         {
-            whatHappens (deck, playerCards, modifiedDealerCards, probValue, losingProb, winningProb);
+            //whatHappens (deck, playerCards, modifiedDealerCards, probValue);
         }
         else if (winner == -1)
         {
@@ -93,7 +94,7 @@ double probOfCard (int card, std::vector<int> deck)
                 ++count;
             }
         }
-        return ((float)count)/deck.size();
+        return ((double)count)/((double)(deck.size()));
     }
     return 0;
 }
@@ -213,12 +214,14 @@ int getCard (std::vector<int>& deck)
     {
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> dis (0, size);
+        std::uniform_int_distribution<> dis (0, size - 1);
         int randomPos = dis(gen);
         int randomCard = deck[randomPos];
         deck.erase (deck.begin() + randomPos);
         return randomCard;
     }
+    std::cerr << "Empty deck" << std::endl;
+    return -1;
 }
 
 void printVector (std::vector<int> theVector)
