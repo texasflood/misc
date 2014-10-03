@@ -20,7 +20,7 @@ int main()
     int draws = 0;
     int losses = 0;
     int wins = 0;
-    int reps = 10000000;
+    int reps = 22000;
     boost::progress_display show_progress(reps);
     for (int noOfGames = 0; noOfGames < reps; ++noOfGames)
     {
