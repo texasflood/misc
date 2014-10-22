@@ -14,13 +14,14 @@ void printVector (std::vector<int> theVector);
 
 double losingProb = 0;
 double winningProb = 0;
-
+/***To do -- make dealer cleverer so that if it is a draw, they only ask for a hit if there is a good chance of them
+ * winning from it ***/
 int main()
 {
     int draws = 0;
     int losses = 0;
     int wins = 0;
-    int reps = 22000;
+    int reps = 1;
     boost::progress_display show_progress(reps);
     for (int noOfGames = 0; noOfGames < reps; ++noOfGames)
     {
@@ -37,9 +38,9 @@ int main()
         playerCards.push_back(getCard(deck));
         playerCards.push_back(getCard(deck));
         dealerCards.push_back(getCard(deck));
-        //std::cout << "Player Cards:" << std::endl;
+        std::cout << "Player Cards:" << std::endl;
         printVector (playerCards);
-        //std::cout << "Dealer Cards:" << std::endl;
+        std::cout << "Dealer Cards:" << std::endl;
         printVector (dealerCards);
         double probValue = 1;
         bool gameFinished = false;
@@ -49,8 +50,8 @@ int main()
             if (!gameFinished)
             {
                 int randomCard = getCard(deck);
-                //std::cout << "Hit me!" << std::endl;
-                //std::cout << "Player gets dealt a " << randomCard << std::endl;
+                std::cout << "Hit me!" << std::endl;
+                std::cout << "Player gets dealt a " << randomCard << std::endl;
                 playerCards.push_back (randomCard);
                 if (vectorSum (playerCards) > 21)
                 {
@@ -63,34 +64,33 @@ int main()
 
         while (!gameFinished)
         {
-            //std::cout << vectorSum(playerCards) << " Player card sum " << std::endl;
             int randomCard = getCard(deck);
-            //std::cout << "Dealer hits, gets " << randomCard << std::endl;
+            std::cout << "Dealer hits, gets " << randomCard << std::endl;
             dealerCards.push_back(randomCard);
             
             if ((vectorSum (dealerCards) > 21) && (vectorSum (playerCards) > 21))
             {
                 draws++;
                 gameFinished = true;
-                //std::cout << "Draw" << std::endl;
+                std::cout << "Draw" << std::endl;
             }
             else if (vectorSum (dealerCards) > 21)
             {
                 wins++;
                 gameFinished = true;
-                //std::cout << "Player wins" << std::endl;
+                std::cout << "Player wins" << std::endl;
             }
             else if (vectorSum (playerCards) > 21)
             {
                 losses++;
                 gameFinished = true;
-                //std::cout << "Dealer wins" << std::endl;
+                std::cout << "Dealer wins" << std::endl;
             }
             else if (whoWins (playerCards, dealerCards) == -1)
             {
                 losses++;
                 gameFinished = true;
-                //std::cout << "Dealer wins" << std::endl;
+                std::cout << "Dealer wins" << std::endl;
             }
         }
         if (((noOfGames + 1) % 10 == 0) && noOfGames != 1)
@@ -123,7 +123,7 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
         winningProb = 0;
         losingProb = 0;
     }
-    //std::cout << "Winning prob from hitting = " << winningProbHit << ", Winning prob stick = " << winningProbStick << std::endl;
+    std::cout << "Winning prob from hitting = " << winningProbHit << ", Winning prob stick = " << winningProbStick << std::endl;
     return ((winningProbStick > winningProbHit) ? false : true);
 }
 
@@ -355,7 +355,7 @@ void printVector (std::vector<int> theVector)
     {
         for (int i = 0; i < theVector.size(); ++i)
         {
-            //std::cout << theVector[i] << std::endl;
+            std::cout << theVector[i] << std::endl;
         }
     }
 }
