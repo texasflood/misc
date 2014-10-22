@@ -29,19 +29,6 @@ done
 
 while :
 do
-        echo "PlayOnLinux? (y or n)"
-        read PlayOnLinux
-        if [ "$PlayOnLinux" = y ]; then
-                PLAYONLINUX=true
-                break
-        elif [ "$PlayOnLinux" = n ]; then
-                PLAYONLINUX=false
-                break
-        fi
-done
-
-while :
-do
         echo "LaTeX? (y or n)"
         read LaTeX
         if [ "$LaTeX" = y ]; then
@@ -91,15 +78,12 @@ easy_install keyring
 easy_install mercurial_keyring
 wget -P ~/.hgext "http://bitbucket.org/Mekk/mercurial_keyring/raw/default/mercurial_keyring.py"
 sudo apt-get install git
-sudo apt-get install okular
+#sudo apt-get install okular
 #Need to install gundo, automatic latex plugin, install vim from scratch, pathogen
 #gcc/g++
 sudo apt-get install openjdk-7-jdk
 sudo apt-get install build-essential
 sudo apt-get install ssh openssh-server
-#dropbox
-cd ~ && wget -O - "https://www.dropbox.com/download?plat=lnx.x86_64" | tar xzf -
-append_rclocal "python ~/Dropbox/dropbox start"
 
 #LaTeX
 if [ "$LATEX" = true ]; then
@@ -137,14 +121,6 @@ if [ "$SKYPE" = true ]; then
 	sudo apt-add-repository "deb http://archive.canonical.com/ $(lsb_release -sc) partner"
 	sudo apt-get update
 	sudo apt-get install skype
-fi
-
-if [ "$PLAYONLINUX" = true ]; then
-    sudo apt-get install wine
-    wget -q "http://deb.playonlinux.com/public.gpg" -O- | sudo apt-key add -
-    sudo wget http://deb.playonlinux.com/playonlinux_precise.list -O /etc/apt/sources.list.d/playonlinux.list
-    sudo apt-get update
-    sudo apt-get install playonlinux 
 fi
 
 if [ "$STM32F4" = true ]; then
