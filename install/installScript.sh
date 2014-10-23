@@ -84,6 +84,7 @@ sudo apt-get install git
 sudo apt-get install openjdk-7-jdk
 sudo apt-get install build-essential
 sudo apt-get install ssh openssh-server
+sudo apt-get install gparted
 
 #LaTeX
 if [ "$LATEX" = true ]; then
