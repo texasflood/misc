@@ -21,11 +21,10 @@ sudo mv armadillo-4.450.3 /opt
 cd /opt/OpenBLAS
 sudo cp libopenblas* /usr/lib
 cmake .
-ech "^^^ Make sure the cmake output shows that it found LAPCK and OpenBLAS, if not delete CMakeCache.txt and run cmake again ^^^"
+read -p "^^^ Make sure the cmake output shows that it found LAPCK and OpenBLAS, if not delete CMakeCache.txt, fix the install and run cmake again ^^^ If not press Ctrl-C to escape this script or press any key to continue"
 make
 sudo make install
 
 ###################Using Simbody######################
 #Get simbody as outlined on github
 sudo update-alternatives --set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf
-
