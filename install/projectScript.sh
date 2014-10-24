@@ -18,6 +18,10 @@ wget http://sourceforge.net/projects/arma/files/armadillo-4.450.3.tar.gz -P ~/Do
 cd ~/Downloads
 sudo tar xvfz armadillo-4.450.3.tar.gz
 sudo mv armadillo-4.450.3 /opt
+cd /opt/armadillo*
+sudo cmake .
+sudo make
+sudo make install
 cd /opt/OpenBLAS
 sudo cp libopenblas* /usr/lib
 cmake .

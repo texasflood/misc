@@ -74,7 +74,7 @@ sudo apt-get install python
 sudo apt-get install python-dev
 sudo apt-get install python3 python3-dev ruby ruby-dev libx11-dev libxt-dev libgtk2.0-dev  libncurses5  ncurses-dev
 sudo apt-get install python-setuptools
-sudo apt-get install mercurial meld
+sudo apt-get install mercurial meld tortoisehg
 sudo easy_install keyring
 sudo easy_install mercurial_keyring
 wget -P ~/.hgext "http://bitbucket.org/Mekk/mercurial_keyring/raw/default/mercurial_keyring.py"
@@ -86,17 +86,22 @@ sudo apt-get install openjdk-7-jdk
 sudo apt-get install build-essential make cmake
 sudo apt-get install ssh openssh-server
 sudo apt-get install gparted
+sudo sed -i '/title_vertical_pad/s|value="[0-9]\{1,2\}"|value="0"|g' \
+       /usr/share/themes/Adwaita/metacity-1/metacity-theme-3.xml
+sudo sed -i -r 's|(<frame_geometry name="max")|\1 has_title="false"|' \
+       /usr/share/themes/Adwaita/metacity-1/metacity-theme-3.xml
 
 #LaTeX
 if [ "$LATEX" = true ]; then
-	wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu && chmod +x ./install-tl-ubuntu
-	sudo ./install-tl-ubuntu
+	#wget https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu && chmod +x ./install-tl-ubuntu
+	#sudo ./install-tl-ubuntu
+    sudo apt-get install texlive-full
 fi
 
 #Chrome
 cd /tmp
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo dpkg -i google-chrome-stable_current_i386.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
 sudo apt-get -f install
 
 #OpenCV
@@ -166,7 +171,7 @@ sudo make install
 
 #Project 
 echo "Installing 4th year project stuff now"
-sudo apt-get install gfortran liblapack-dev
+sudo apt-get install gfortran liblapack-dev libatlas-base-dev libatlas-dev
 git clone git://github.com/xianyi/OpenBLAS ~/Downloads/OpenBLAS
 sudo mv ~/Downloads/OpenBLAS /opt
 cd /opt/OpenBLAS
@@ -176,8 +181,12 @@ wget http://sourceforge.net/projects/arma/files/armadillo-4.450.3.tar.gz -P ~/Do
 cd ~/Downloads
 tar xvfz armadillo-4.450.3.tar.gz
 sudo mv armadillo-4.450.3 /opt
+cd /opt/armadillo*
+sudo cmake .
+sudo make
+sudo make install
 cd /opt/OpenBLAS
-sudo cp libopenblas.so.0 /usr/lib
+sudo cp libopenblas* /usr/lib
 cmake .
 
 sudo apt-get install freeglut3-dev libxi-dev libxmu-dev
@@ -202,9 +211,10 @@ sudo ctest -j4
 read -p "Have all tests passed?"
 sudo make -j4 install
 
-echo 'export SIMBODY_HOME_REL=/opt/simbody-build-rel' >> ~/.bashrc
-echo 'export SIMBODY_HOME_DEB=/opt/simbody-build-deb' >> ~/.bashrc
-sudo update-alternatives --set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf
+echo 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/simbody-build-rel/lib/x86_64-linux-gnu' >> ~/.bashrc
+echo 'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/simbody-build-deb/lib/x86_64-linux-gnu' >> ~/.bashrc
+echo 'export LD_LIBRARY_PATH' >> ~/.bashrc
+#sudo update-alternatives --set liblapack.so.3gf /usr/lib/lapack/liblapack.so.3gf #Don't know if this is needed?
 
 #Vim
 cd ~/Downloads
