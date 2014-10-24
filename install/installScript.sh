@@ -75,15 +75,15 @@ sudo apt-get install python-dev
 sudo apt-get install python3 python3-dev ruby ruby-dev libx11-dev libxt-dev libgtk2.0-dev  libncurses5  ncurses-dev
 sudo apt-get install python-setuptools
 sudo apt-get install mercurial meld
-easy_install keyring
-easy_install mercurial_keyring
+sudo easy_install keyring
+sudo easy_install mercurial_keyring
 wget -P ~/.hgext "http://bitbucket.org/Mekk/mercurial_keyring/raw/default/mercurial_keyring.py"
 sudo apt-get install git
 #sudo apt-get install okular
 #Need to install gundo, automatic latex plugin, install vim from scratch, pathogen
 #gcc/g++
 sudo apt-get install openjdk-7-jdk
-sudo apt-get install build-essential
+sudo apt-get install build-essential make cmake
 sudo apt-get install ssh openssh-server
 sudo apt-get install gparted
 
@@ -174,7 +174,7 @@ sudo make
 sudo make install
 wget http://sourceforge.net/projects/arma/files/armadillo-4.450.3.tar.gz -P ~/Downloads
 cd ~/Downloads
-sudo tar xvfz armadillo-4.450.3.tar.gz
+tar xvfz armadillo-4.450.3.tar.gz
 sudo mv armadillo-4.450.3 /opt
 cd /opt/OpenBLAS
 sudo cp libopenblas.so.0 /usr/lib
@@ -182,21 +182,21 @@ cmake .
 
 sudo apt-get install freeglut3-dev libxi-dev libxmu-dev
 cd ~/Downloads
-git clone git:://github.com/simbody/simbody simbody-source
+git clone git://github.com/simbody/simbody simbody-source
 sudo mv simbody-source /opt
 cd /opt/simbody-source
 git checkout Simbody-3.4.1
-mkdir /opt/simbody-build-rel
+sudo mkdir /opt/simbody-build-rel
 cd /opt/simbody-build-rel
-cmake /opt/simbody-source -DCMAKE_INSTALL_PREFIX=/opt/simbody-build-rel -DCMAKE_BUILD_TYPE=Release
+sudo cmake /opt/simbody-source -DCMAKE_INSTALL_PREFIX=/opt/simbody-build-rel -DCMAKE_BUILD_TYPE=Release
 sudo make -j4
 sudo ctest -j4
 read -p "Have all tests passed?"
 sudo make -j4 install
 
-mkdir /opt/simbody-build-deb
+sudo mkdir /opt/simbody-build-deb
 cd /opt/simbody-build-deb
-cmake /opt/simbody-source -DCMAKE_INSTALL_PREFIX=/opt/simbody-build-deb -DCMAKE_BUILD_TYPE=Debug
+sudo cmake /opt/simbody-source -DCMAKE_INSTALL_PREFIX=/opt/simbody-build-deb -DCMAKE_BUILD_TYPE=Debug
 sudo make -j4
 sudo ctest -j4
 read -p "Have all tests passed?"
@@ -228,7 +228,7 @@ sudo make
 read -p "Check if vim has python"
 sudo update-alternatives --install "/usr/bin/vim" "vim" "/usr/local/bin/vim" 1
 sudo update-alternatives --install "/usr/bin/vi" "vi" "/usr/local/bin/vim" 1
-easy_install psutil #For atp_tex
+sudo easy_install psutil #For atp_tex
 read -p "Copy .vim and vimrc files and run :helptags ~/.vim/doc"
 
 #vim terminal
