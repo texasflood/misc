@@ -86,6 +86,7 @@ sudo apt-get install openjdk-7-jdk
 sudo apt-get install build-essential make cmake
 sudo apt-get install ssh openssh-server
 sudo apt-get install gparted
+sudo apt-get install gnome-tweak-tool
 sudo sed -i '/title_vertical_pad/s|value="[0-9]\{1,2\}"|value="0"|g' \
        /usr/share/themes/Adwaita/metacity-1/metacity-theme-3.xml
 sudo sed -i -r 's|(<frame_geometry name="max")|\1 has_title="false"|' \
@@ -125,9 +126,12 @@ if [ "$ARDUINO" = true ]; then
 fi
 
 if [ "$SKYPE" = true ]; then
-	sudo apt-add-repository "deb http://archive.canonical.com/ $(lsb_release -sc) partner"
+	sudo dpkg --add-architecture i386
 	sudo apt-get update
-	sudo apt-get install skype
+    cd ~/Downloads
+    sudo wget -O skype-install.deb http://www.skype.com/go/getskype-linux-deb
+    sudo dpkg -i skype-install.deb
+	sudo apt-get -f install
 fi
 
 if [ "$STM32F4" = true ]; then
@@ -245,5 +249,22 @@ read -p "Copy .vim and vimrc files and run :helptags ~/.vim/doc"
 echo "set editing-mode vi" >> ~/.inputrc
 echo "set keymap vi-command" >> ~/.inputrc
 
+#Extra stuff
+#Replace chrome logo
+sudo cp /usr/local/share/icons/hicolor/256x256/apps/google-chrome.png /usr/local/share/icons/hicolor/48x48/apps
+
+#copy ubuntu fonts from packages, replace etc/shared/fonts and find ubuntu font packages and replace 
+#http://noz3001.wordpress.com/2011/07/01/ubuntu-font-rendering-on-debian-wheezy/
+#http://www.webupd8.org/2013/06/better-font-rendering-in-linux-with.html
+echo "deb http://ppa.launchpad.net/no1wantdthisname/ppa/ubuntu precise main" | sudo tee /etc/apt/sources.list.d/infinality.list
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E985B27B
+sudo apt-get update
+sudo apt-get install fontconfig-infinality
+
+#Add special config for touchpad gestures and controls in X11/xorg*/synaptics.conf
+#Set vim as default editor over gedit
+#some things in this script file assume debian and not ubuntu
+# in gnome tweak tool turn off dynamic workspaces and set full path to always show
+#in banshee, go to preferences and enable metadata and file syncing
 cd ~
 echo "Done"
