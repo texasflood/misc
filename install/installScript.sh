@@ -266,5 +266,8 @@ sudo apt-get install fontconfig-infinality
 #some things in this script file assume debian and not ubuntu
 # in gnome tweak tool turn off dynamic workspaces and set full path to always show
 #in banshee, go to preferences and enable metadata and file syncing
+# replace line in ~/.gnome2/accels/nautilus (gtk_accel_path "<Actions>/DirViewActions/Trash" "Delete") 
+sed -i 's/; (gtk_accel_path "<Actions>\/DirViewActions\/Trash" "<Primary>Delete")/(gtk_accel_path "<Actions>\/DirViewActions\/Trash" "Delete")/' ~/.gnome2/accels/nautilus
+
 cd ~
 echo "Done"
