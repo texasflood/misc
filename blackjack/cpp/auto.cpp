@@ -144,25 +144,25 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
     {
       return true;
     }
-    else
-    {
-      winningProbHit = 0;
-    }
-    if (shouldIHit (deck, modifiedPlayerCards, dealerCards))
-    {
-      for (int j = 1; j < 11; ++j)
-      {
-        std::vector<int> deck2 = std::vector<int>(deck.begin(), deck.end());
-        std::vector<int> modifiedPlayerCards2 = std::vector<int>(modifiedPlayerCards.begin(), modifiedPlayerCards.end());
-        modifiedPlayerCards2.push_back (j);
-        vectorPopValue (j, deck);
-        double probValue2 = probOfCard (j, deck) * probValue;
-        whatHappens (deck2, modifiedPlayerCards2, dealerCards, probValue2);
-        winningProbHit += winningProb;
-        winningProb = 0;
-        losingProb = 0;
-      }
-    }
+    //else
+    //{
+    //  winningProbHit = 0;
+    //}
+    //if (shouldIHit (deck, modifiedPlayerCards, dealerCards))
+    //{
+    //  for (int j = 1; j < 11; ++j)
+    //  {
+    //    std::vector<int> deck2 = std::vector<int>(deck.begin(), deck.end());
+    //    std::vector<int> modifiedPlayerCards2 = std::vector<int>(modifiedPlayerCards.begin(), modifiedPlayerCards.end());
+    //    modifiedPlayerCards2.push_back (j);
+    //    vectorPopValue (j, deck);
+    //    double probValue2 = probOfCard (j, deck) * probValue;
+    //    whatHappens (deck2, modifiedPlayerCards2, dealerCards, probValue2);
+    //    winningProbHit += winningProb;
+    //    winningProb = 0;
+    //    losingProb = 0;
+    //  }
+    //}
   }
   std::cout << "Winning prob from hitting = " << winningProbHit << ", Winning prob stick = " << winningProbStick << std::endl;
   return ((winningProbStick > winningProbHit) ? false : true);
