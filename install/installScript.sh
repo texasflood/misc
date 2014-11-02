@@ -91,6 +91,11 @@ sudo sed -i '/title_vertical_pad/s|value="[0-9]\{1,2\}"|value="0"|g' \
        /usr/share/themes/Adwaita/metacity-1/metacity-theme-3.xml
 sudo sed -i -r 's|(<frame_geometry name="max")|\1 has_title="false"|' \
        /usr/share/themes/Adwaita/metacity-1/metacity-theme-3.xml
+#Ap hotspot - only for ubuntu
+#sudo apt-get install hostapd
+#sudo add-apt-repository ppa:nilarimogard/webupd8
+#sudo apt-get update
+#sudo apt-get install ap-hotspot
 
 #LaTeX
 if [ "$LATEX" = true ]; then
