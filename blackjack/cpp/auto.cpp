@@ -11,16 +11,20 @@ int whoWins (std::vector<int> playerCards, std::vector<int> dealerCards);
 int getCard (std::vector<int>& deck);
 void printVector (std::vector<int> theVector);
 
+std::vector<int> standard21 = std::vector<int>();
 double losingProb = 0;
 double winningProb = 0;
 /***To do -- make dealer cleverer so that if it is a draw, they only ask for a hit if there is a good chance of them
  * winning from it ***/
 int main()
 {
+  standard21.push_back (10);
+  standard21.push_back (5);
+  standard21.push_back (6);
   int draws = 0;
   int losses = 0;
   int wins = 0;
-  int reps = 1;
+  int reps = 100;
   for (int noOfGames = 0; noOfGames < reps; ++noOfGames)
   {
     std::vector<int> playerCards = std::vector<int>();
@@ -121,7 +125,7 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
   double winningProbStick = winningProb;
   winningProb = 0;
   losingProb = 0;
-  if (winningProbStick > 0.5)
+  if (winningProbStick > 0.5 || vectorSum (playerCards) > 20 || whoWins (playerCards, standard21) >= 0)
   {
     return false;
   }
