@@ -24,7 +24,7 @@ int main()
   int draws = 0;
   int losses = 0;
   int wins = 0;
-  int reps = 100;
+  int reps = 2000;
   for (int noOfGames = 0; noOfGames < reps; ++noOfGames)
   {
     std::vector<int> playerCards = std::vector<int>();
@@ -110,6 +110,7 @@ int main()
         }
       }
     }
+    std::cout << "!!!!!!!!!! " << noOfGames << std::endl;
   }
   std::cout << "No of wins = " << wins << std::endl;
   std::cout << "No of losses = " << losses << std::endl;
@@ -124,7 +125,7 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
   double winningProbStick = winningProb;
   winningProb = 0;
   losingProb = 0;
-  if (winningProbStick > 0.5 || vectorSum (playerCards) > 20 || whoWins (playerCards, standard21) >= 0)
+  if (vectorSum (playerCards) > 20 || whoWins (playerCards, standard21) >= 0)
   {
     return false;
   }
@@ -147,13 +148,17 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
     double tempProb = winningProb;
     winningProb = 0;
     losingProb = 0;
-    if (winningProbHit > winningProbStick || winningProbHit > 0.5)
+    if (winningProbHit > winningProbStick)
     {
       return true;
     }
+    else
+    {
+      winningProbHit = 0;
+    }
     if (shouldIHit (deck, modifiedPlayerCards, dealerCards))
     {
-      winningProbHit -= tempProb;
+      //winningProbHit -= tempProb;
       //winningProbHit = 0;
       for (int j = 1; j < 11; ++j)
       {
