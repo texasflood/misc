@@ -44,7 +44,14 @@ int main()
     bool gameFinished = false;
     while (!gameFinished)
     {
-      gameFinished = !(shouldIHit (deck, playerCards, dealerCards));
+      if (vectorSum (playerCards) < 15)
+      {
+        gameFinished = false;
+      }
+      else
+      {
+        gameFinished = !(shouldIHit (deck, playerCards, dealerCards));
+      }
       if (!gameFinished)
       {
         int randomCard = getCard(deck);
@@ -108,11 +115,16 @@ int main()
 
 bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::vector<int> dealerCards)
 {
+  std::cout << "In should I hit" << std::endl;
   double winningProbHit = 0;
   whatHappens (headDeck, playerCards, dealerCards, 1);
   double winningProbStick = winningProb;
   winningProb = 0;
   losingProb = 0;
+  if (winningProbStick > 0.5)
+  {
+    return false;
+  }
   for (int i = 1; i < 11; ++i)
   {
     std::vector<int> deck = std::vector<int>(headDeck.begin(), headDeck.end());
@@ -124,6 +136,29 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
     winningProbHit += winningProb;
     winningProb = 0;
     losingProb = 0;
+    if (winningProbHit > winningProbStick || winningProbHit > 0.5)
+    {
+      return true;
+    }
+    else
+    {
+      winningProbHit = 0;
+    }
+    if (shouldIHit (deck, modifiedPlayerCards, dealerCards))
+    {
+      for (int j = 1; j < 11; ++j)
+      {
+        std::vector<int> deck2 = std::vector<int>(deck.begin(), deck.end());
+        std::vector<int> modifiedPlayerCards2 = std::vector<int>(modifiedPlayerCards.begin(), modifiedPlayerCards.end());
+        modifiedPlayerCards2.push_back (j);
+        vectorPopValue (j, deck);
+        double probValue2 = probOfCard (j, deck) * probValue;
+        whatHappens (deck2, modifiedPlayerCards2, dealerCards, probValue2);
+        winningProbHit += winningProb;
+        winningProb = 0;
+        losingProb = 0;
+      }
+    }
   }
   std::cout << "Winning prob from hitting = " << winningProbHit << ", Winning prob stick = " << winningProbStick << std::endl;
   return ((winningProbStick > winningProbHit) ? false : true);
