@@ -1,0 +1,4 @@
+No of wins = 778
+No of losses = 1222
+No of draws = 0
+Winning percentage = 38.9
