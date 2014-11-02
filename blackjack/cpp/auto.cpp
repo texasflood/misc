@@ -24,7 +24,7 @@ int main()
   int draws = 0;
   int losses = 0;
   int wins = 0;
-  int reps = 10;
+  int reps = 100;
   for (int noOfGames = 0; noOfGames < reps; ++noOfGames)
   {
     std::vector<int> playerCards = std::vector<int>();
@@ -144,19 +144,17 @@ bool shouldIHit (std::vector<int> headDeck, std::vector<int> playerCards, std::v
     modifiedPlayerCards.push_back(i);
     whatHappens (deck, modifiedPlayerCards, dealerCards, probValue);
     winningProbHit += winningProb;
+    double tempProb = winningProb;
     winningProb = 0;
     losingProb = 0;
     if (winningProbHit > winningProbStick || winningProbHit > 0.5)
     {
       return true;
     }
-    //else
-    //{
-    //  winningProbHit = 0;
-    //}
     if (shouldIHit (deck, modifiedPlayerCards, dealerCards))
     {
-      winningProbHit = 0;
+      winningProbHit -= tempProb;
+      //winningProbHit = 0;
       for (int j = 1; j < 11; ++j)
       {
         std::vector<int> deck2 = std::vector<int>(deck.begin(), deck.end());
