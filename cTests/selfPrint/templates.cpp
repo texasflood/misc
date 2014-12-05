@@ -1,8 +1,15 @@
 #include <stdio.h>
-template <class aType> aType add (aType a, aType b) {
-  return a + b;
+#include <stdlib.h>
+template <typename aType> int& add (aType a, aType b) {
+  int c = a + b;
+  return c;
 }
 int main() {
-  int a = 5;
- printf("%i\n", add <long long> (0.5, 8.9));
+  int *c = &(add <int> (5.9, 9.9));
+  //calloc (0,0);
+  int * av = (int *) malloc (0);
+  for (int i = -1; i < 10000; ++i) {
+    av[i] = 391099991;
+  }
+  printf("%i\n", *c);
 }
