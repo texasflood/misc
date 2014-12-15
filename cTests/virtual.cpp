@@ -1,37 +1,53 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
 
-class Account {
-public:
-   Account( double d ) { _balance = d; }
-   virtual double GetBalance() { return _balance; }
-   virtual void PrintBalance() { cerr << "Error. Balance not available for base type." << endl; }
-private:
-    double _balance;
+class animal {
+  private:
+    static int noOfAnimals;
+    int size;
+    const char * name;
+  public:
+    animal (const char * nameArg);
+    ~animal () {printf("%i\n", /*this->*/size);noOfAnimals--;};
+    void introduce();
+    void eat();
+    void makeSound(){printf("Generic Sound\n");};
+    static int getCount (){return noOfAnimals;};
 };
 
-class CheckingAccount : public Account {
-public:
-   CheckingAccount(double d) : Account(d) {}
-   void PrintBalance() { cout << "Checking account balance: " << GetBalance() << endl; }
+animal::animal (const char * nameArg) {
+  name = nameArg;
+  noOfAnimals++;
+}
+
+void animal::introduce () {
+  printf ("Hello my name is %s\n", name);
+}
+
+void animal::eat () {
+  makeSound();
+  printf ("Eating\n");
+  this->size = 5;
+}
+
+//void animal::makeSound () {
+  //printf ("Generic sound\n");
+//}
+
+class dog : public animal {
+  public:
+    dog (const char * nameArg) : animal (nameArg){}
+    void makeSound () {
+      printf ("Woof!\n");
+    }
 };
 
-class SavingsAccount : public Account {
-public:
-   SavingsAccount(double d) : Account(d) {}
-   void PrintBalance() { cout << "Savings account balance: " << GetBalance() << endl; }
-};
+int animal::noOfAnimals = 0;
 
 int main() {
-   // Create objects of type CheckingAccount and SavingsAccount.
-   CheckingAccount *pChecking = new CheckingAccount( 100.00 ) ;
-   SavingsAccount  *pSavings  = new SavingsAccount( 1000.00 );
-
-   // Call PrintBalance using a pointer to Account.
-   Account *pAccount = pChecking;
-   pAccount->PrintBalance();
-
-   // Call PrintBalance using a pointer to Account.
-   pAccount = pSavings;
-   pAccount->PrintBalance();   
+  dog *aDog = new dog("Bobby");
+  animal *anAni = aDog;
+  aDog->eat();
+  aDog->~animal();
+  printf ("%i\n", aDog->getCount());
+  return 0;
 }
