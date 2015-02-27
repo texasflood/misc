@@ -7,8 +7,7 @@ using namespace std;
 
 void printInnerContours (int contourPos, Mat &filled, vector<vector<Point2i > > &contours, vector<Vec4i> &hierarchy, int area);
 
-int main()
-{
+int main() {
     int areaThresh;
     vector<vector<Point2i > > contours;
 	vector<Vec4i> hierarchy;
@@ -20,19 +19,14 @@ int main()
     findContours (text, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
     Mat filled = Mat::zeros(text.rows, text.cols, CV_8U);
 
-    cout << "here" << endl;
     cout << contours.size() << endl;
-    for (int i = 0; i < contours.size(); i++)
-    {
+    for (int i = 0; i < contours.size(); i++) {
         int area = contourArea(contours[i]);
-        if (area > areaThresh)
-        {
-            if ((hierarchy[i][2] != -1) && (hierarchy[i][3] == -1))
-            {
+        if (area > areaThresh) {
+            if ((hierarchy[i][2] != -1) && (hierarchy[i][3] == -1)) {
 
                 drawContours (filled, contours, i, 255, -1);
-                if (hierarchy[i][2] != -1)
-                {
+                if (hierarchy[i][2] != -1) {
                     printInnerContours (hierarchy[i][2], filled, contours, hierarchy, area);
                 }
             }
@@ -43,21 +37,17 @@ int main()
     return 0;
 }
 
-void printInnerContours (int contourPos, Mat &filled, vector<vector<Point2i > > &contours, vector<Vec4i> &hierarchy, int area)
-{
+void printInnerContours (int contourPos, Mat &filled, vector<vector<Point2i > > &contours, vector<Vec4i> &hierarchy, int area) {
     int areaFrac = 5;
 
-    if (((contourArea (contours[contourPos]) * 100) / area) < areaFrac)
-    {
+    if (((contourArea (contours[contourPos]) * 100) / area) < areaFrac) {
         //drawContours (filled, contours, contourPos, 0, -1);
     }
-    if (hierarchy[contourPos][2] != -1)
-    {
+    if (hierarchy[contourPos][2] != -1) {
         printInnerContours (hierarchy[contourPos][2], filled, contours, hierarchy, area);
     }
 
-    if (hierarchy[contourPos][0] != -1)
-    {
+    if (hierarchy[contourPos][0] != -1) {
         printInnerContours (hierarchy[contourPos][0], filled, contours, hierarchy, area);
     }
 }
