@@ -40,12 +40,20 @@ for person in people:
 
 print peopleDict
 
-owedArray = [[0]*len(people)]*len(people)
+owedArray = []
+for i in people:
+  owedArray.append([0]*len(people))
+
 for person in people:
   for expense in peopleDict[person]:
     for debtor in expense['responsibles']:
       if person != debtor:
         owedArray[people.index(person)][people.index(debtor)] += float(expense['amount'])/len(expense['responsibles'])
         owedArray[people.index(debtor)][people.index(person)] -= float(expense['amount'])/len(expense['responsibles'])
+
+for idx, debtors in enumerate(owedArray):
+  print people[idx] + ' is owed:'
+  for jdx, debtor in enumerate(debtors):
+    print people[jdx] + u' \xA3' + str(debtor)
 
 print owedArray
