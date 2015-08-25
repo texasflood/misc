@@ -1,5 +1,4 @@
-import sys
-
+#!/usr/bin/env python
 while True:
   people = raw_input('Enter people split by a comma:\n')
   people = [x.strip() for x in people.split(',')]
@@ -25,9 +24,22 @@ for person in people:
       print 'Entering expense number ' + str(idx) + ' for ' + person
       expense = {}
       expense['name'] = raw_input('For ' + person + ' enter expense name\n')
-      expense['amount'] = float(raw_input('For expense ' + expense['name'] + ' incurred by ' + person + ', enter amount\n'))
-      expense['responsibles'] = raw_input('Enter people responsible split by a comma:\n')
-      expense['responsibles'] = [x.strip() for x in expense['responsibles'].split(',')]
+      while True:
+        try:
+          expense['amount'] = float(raw_input('For expense ' + expense['name'] + ' incurred by ' + person + ', enter amount\n'))
+        except ValueError:
+          print 'Invalid number'
+          continue
+        break
+
+      while True:
+        expense['responsibles'] = raw_input('Enter people responsible split by a comma:\n')
+        expense['responsibles'] = [x.strip() for x in expense['responsibles'].split(',')]
+        if set(expense['responsibles']) <= set(people):
+          break
+        else:
+          print 'Some people you entered as responsible for the bill are not in the original list, try again'
+
       peopleDict[person].append(expense)
       idx += 1
       while True:
