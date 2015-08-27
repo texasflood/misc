@@ -1,0 +1,68 @@
+\documentclass[a4paper,12pt]{article}
+%\usepackage{amsthm}
+%\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[thm]
+\newtheorem{prf}{Proof}[thm]
+\newtheorem{defn}{Definition}[section]
+\newtheorem{exmp}{Example}
+\setcounter{secnumdepth}{3}
+\usepackage{siunitx}
+\usepackage{microtype}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{commath}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{longtable}
+\usepackage{enumerate}
+\graphicspath{}
+\usepackage[margin=1in]{geometry}
+\usepackage{amssymb}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\linespread{1.3}
+\usepackage{listings}
+\usepackage{xcolor} % for setting colors
+
+% set the default code style
+\lstset{
+    language=C++,
+    frame=tb, % draw a frame at the top and bottom of the code block
+    tabsize=4, % tab space width
+    showstringspaces=false, % don't mark spaces in strings
+    numbers=left, % display line numbers on the left
+    commentstyle=\color{green}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red}, % string color
+    basicstyle=\footnotesize\ttfamily,
+    basewidth = {.48em},
+}
+\newcommand*{\diff}{\mathop{}\!\mathbf{d}}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=\parskip \thm@postskip=0pt
+}
+\makeatother
+\title{Professional C++ notes}
+\date{\today}
+\author{Anas Syed}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Basics}
+
+\begin{lstlisting}[numbers=none, caption={C++ code using listings}]
+#include <iostream>
+int main() {
+    // print hello to the console
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
+}
+\end{lstlisting}
+
+\end{document}
