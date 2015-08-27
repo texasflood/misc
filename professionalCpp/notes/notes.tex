@@ -6,7 +6,7 @@
 \newtheorem{prf}{Proof}[thm]
 \newtheorem{defn}{Definition}[section]
 \newtheorem{exmp}{Example}
-\setcounter{secnumdepth}{3}
+%\setcounter{secnumdepth}{3}
 \usepackage{siunitx}
 \usepackage{microtype}
 \usepackage{float}
@@ -29,18 +29,19 @@
 
 % set the default code style
 \lstset{
-    language=C++,
-    frame=tb, % draw a frame at the top and bottom of the code block
-    tabsize=4, % tab space width
-    showstringspaces=false, % don't mark spaces in strings
-    numbers=left, % display line numbers on the left
-    commentstyle=\color{green}, % comment color
-    keywordstyle=\color{blue}, % keyword color
-    stringstyle=\color{red}, % string color
-    basicstyle=\footnotesize\ttfamily,
-    basewidth = {.48em},
+  language=C++,
+  frame=tb, % draw a frame at the top and bottom of the code block
+  tabsize=4, % tab space width
+  showstringspaces=false, % don't mark spaces in strings
+    %numbers=left, % display line numbers on the left
+  commentstyle=\color{green}, % comment color
+  keywordstyle=\color{blue}, % keyword color
+  stringstyle=\color{red}, % string color
+  basicstyle=\ttfamily\lst@ifdisplaystyle\footnotesize\fi,
+  basewidth = {.48em}
 }
 \newcommand*{\diff}{\mathop{}\!\mathbf{d}}
+\newcommand*{\hlinebreak}{\rule{\textwidth}{1pt}}
 \makeatletter
 \def\thm@space@setup{%
   \thm@preskip=\parskip \thm@postskip=0pt
@@ -53,16 +54,179 @@
 \begin{document}
 \maketitle
 \tableofcontents
+\newcommand{\sectionbreak}{\clearpage}
 
 \section{Basics}
+\subsection{Preprocessor directives}
 
-\begin{lstlisting}[numbers=none, caption={C++ code using listings}]
-#include <iostream>
+\lstinline|#pragma| is not standard across all compilers, so don't use it.
+
+\hlinebreak
+\begin{lstlisting}[caption={Prevent circular includes}]
+#ifndef [key]
+#define [key]
+//code
+#endif
+\end{lstlisting}
+
+\subsection{Casting}
+\begin{enumerate}
+  \item \lstinline|bool someBool = (bool)someInt;|
+  \item \lstinline|bool someBool = bool(someInt);|
+  \item \label{itm:static_cast} \lstinline|bool someBool = static_cast<bool>(someInt);|
+\end{enumerate}
+\Cref{itm:static_cast} is considered to be the cleanest.
+
+\subsection{Structs}
+Structs are the same as classes in \verb|C++|, except the default access specifier for a struct is public, whereas for a class it's private. If we define a struct as follows:
+
+\begin{lstlisting}
+struct employee {
+  int age;
+  float salary;
+  char initial;
+} employee1, employee2;
+\end{lstlisting}
+
+then when we call the struct in \verb|C|, we must prefix \verb|employee| with \verb|struct|. In \verb|C++|, this is optional. Alternatively, in \verb|C|, we can \verb|typedef| the struct:
+
+\begin{lstlisting}
+typedef struct {
+  int age;
+  float salary;
+  char initial;
+} employee;
+employee employee1, employee2;
+\end{lstlisting}
+
+or
+
+\begin{lstlisting}
+struct employee {
+  int age;
+  float salary;
+  char initial;
+} employee1, employee2;
+typedef struct employee employee;
+\end{lstlisting}
+\subsection{Stack and heap}
+The stack is a Last in First out data structure. If you call a function \lstinline|foo()|, then all of the static variables (those not created using \lstinline|new| or \lstinline|malloc|) in \lstinline|foo| exist in a stack frame. If \lstinline|foo| was called from \lstinline|main|, then you cannot easily change or access the static variables in the stack frame of \lstinline|foo| from within \lstinline|main|, because they are in a different stack frame.
+
+However, if you allocate some dynamic memory to a variable in \lstinline|foo|, then you could access or modify this variable in main.
+\subsubsection{Freeing memory}
+When you allocate memory with the \lstinline|new| operator, you must eventually free it with \lstinline|delete|. Note that this even applies to \lstinline|int| objects. For example, the following code has a 4 byte memory leak:
+
+\begin{lstlisting}[caption={Memory leak}]
 int main() {
-    // print hello to the console
-    std::cout << "Hello, world!" << std::endl;
-    return 0;
+  int* a = new int(5);
 }
+\end{lstlisting}
+
+Running \lstinline|valgrind --tool=memcheck ./a.out| gives the error message:
+\begin{lstlisting}[language=bash, caption={Valgrind output}]
+==11934== Memcheck, a memory error detector
+==11934== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==11934== Using Valgrind-3.10.1 and LibVEX; rerun with -h for copyright info
+==11934== Command: ./a.out
+==11934== 
+==11934== 
+==11934== HEAP SUMMARY:
+==11934==     in use at exit: 4 bytes in 1 blocks
+==11934==   total heap usage: 1 allocs, 0 frees, 4 bytes allocated
+==11934== 
+==11934== LEAK SUMMARY:
+==11934==    definitely lost: 4 bytes in 1 blocks
+==11934==    indirectly lost: 0 bytes in 0 blocks
+==11934==      possibly lost: 0 bytes in 0 blocks
+==11934==    still reachable: 0 bytes in 0 blocks
+==11934==         suppressed: 0 bytes in 0 blocks
+==11934== Rerun with --leak-check=full to see details of leaked memory
+==11934== 
+==11934== For counts of detected and suppressed errors, rerun with: -v
+==11934== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+\end{lstlisting}
+See \url{http://www.cprogramming.com/debugging/valgrind.html} for more information on Valgrind.
+
+On the other hand, the following does not create a leak:
+\begin{lstlisting}[caption={No memory leak}]
+int main() {
+  int a = int(5);
+}
+\end{lstlisting}
+
+\subsection{Strings}
+\subsubsection{C style}
+\begin{lstlisting}
+char arrayString[20] = "Hello, World"; //allocates 20 bytes
+char* pointerString = "Hello, World"; //allocates 13 bytes
+\end{lstlisting}
+
+Use \lstinline|#include <cstring>| for standard \verb|C| library functions.
+\subsubsection{C++ style}
+\begin{lstlisting}
+#include <string>
+int main() {
+  std::string str1 = "Hello";
+  std::string str2 = str1 + ", World";
+}
+\end{lstlisting}
+\subsection{Exceptions}
+\begin{lstlisting}
+#include <iostream>
+#include <stdexcept>
+
+double divideNumbers(double inNumerator, double inDenominator) {
+  if (inDenominator == 0) {
+    throw std::exception();
+  }
+  return (inNumerator / inDenominator);
+}
+
+int main(int argc, char** argv) {
+  try {
+    std::cout << divideNumbers(2.3, 0) << std::endl;
+  } catch (std::exception exception) {
+    std::cout << "An exception was caught!" << std::endl;
+  }
+}
+\end{lstlisting}
+
+\section{Object oriented programming}
+\subsection{Access specifiers}
+Any method of the class can call a protected method and access a protected member. Methods of a subclass can call a protected method or access a protected member of an object.
+\subsection{Reminder of syntax}
+\begin{lstlisting}[caption={SpreadsheetCell.h}]
+class SpreadsheetCell {
+  public:
+    SpreadsheetCell();
+    ~SpreadsheetCell();
+    double getValue();
+  private:
+    double mValue;
+};
+\end{lstlisting}
+\begin{lstlisting}[caption={SpreadsheetCell.cpp}]
+#include "SpreadsheetCell.h"
+SpreadsheetCell::SpreadsheetCell() : mValue(0) {
+  std::cout << "Creating cell" << std::endl;
+}
+
+SpreadsheetCell::~SpreadsheetCell() {
+  std::cout << "Destroying cell " << mValue << std::endl;
+}
+
+double SpreadsheetCell::getValue() {
+  return (mValue);
+}
+\end{lstlisting}
+\subsection{Creating objects on the stack or heap}
+\begin{lstlisting}[caption={Creating objects on the stack}]
+SpreadsheetCell myCell, anotherCell;
+\end{lstlisting}
+\begin{lstlisting}[caption={Creating objects on the heap}]
+SpreadsheetCell* myCellp = new SpreadsheetCell();
+//run some code
+delete myCellp; //Don't forget to deallocate memory
 \end{lstlisting}
 
 \end{document}
