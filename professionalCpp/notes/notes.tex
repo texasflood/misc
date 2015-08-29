@@ -198,11 +198,11 @@ Any method of the class can call a protected method and access a protected membe
 \begin{lstlisting}[caption={SpreadsheetCell.h}]
 class SpreadsheetCell {
   public:
-    SpreadsheetCell();
-    ~SpreadsheetCell();
-    double getValue();
+  SpreadsheetCell();
+  ~SpreadsheetCell();
+  double getValue();
   private:
-    double mValue;
+  double mValue;
 };
 \end{lstlisting}
 \begin{lstlisting}[caption={SpreadsheetCell.cpp}]
@@ -228,5 +228,79 @@ SpreadsheetCell* myCellp = new SpreadsheetCell();
 //run some code
 delete myCellp; //Don't forget to deallocate memory
 \end{lstlisting}
+
+\subsection{Constructors}
+\begin{itemize}
+  \item Whenever an object is created, one of its constructors \emph{must} be called.
+\end{itemize}
+
+Say we had a constructor as follows:
+\begin{lstlisting}
+SpreadsheetCell::SpreadsheetCell(double initialValue) {
+  setValue(initialValue);
+}
+\end{lstlisting}
+Then to create an object on the stack, we must do the following:
+\begin{lstlisting}
+SpreadsheetCell myCell(5), anotherCell(4);
+\end{lstlisting}
+The following do not work:
+\begin{lstlisting}
+SpreadsheetCell myCell.SpreadsheetCell(5); // WILL NOT COMPILE!
+//or
+SpreadsheetCell myCell;
+myCell.SpreadsheetCell(5); // WILL NOT COMPILE!
+\end{lstlisting}
+
+And for allocation on the heap, use
+\begin{lstlisting}
+SpreadsheetCell *myCellp = new SpreadsheetCell(5);
+SpreadsheetCell *anotherCellp;
+anotherCellp = new SpreadsheetCell(4);
+delete anotherCellp;
+\end{lstlisting}
+
+For overloaded constructors, calling one constructor from another does not apply to the variable of the outer constructor (as expected). The following code shows this problem:
+
+\begin{lstlisting}
+SpreadsheetCell::SpreadsheetCell(string initialValue) {
+  SpreadsheetCell(stringToDouble(initialValue));
+  //Does not call the constructor for this object
+}
+\end{lstlisting}
+
+\subsection{Default constructors}
+A default constructor is required if you want to be able to declare an object but not initialise it, like \lstinline|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
+
+\begin{lstlisting}
+SpreadsheetCell myCell;
+myCell.setValue(6);
+\end{lstlisting}
+
+A word of warning: do not call the default constructor with parentheses when creating the object on the stack. The following is incorrect:
+
+\begin{lstlisting}[numbers=left]
+SpreadsheetCell myCell(); // WRONG, but will compile.
+myCell.setValue(6); // However, this line will not compile.
+\end{lstlisting}
+
+Line 1 does compile. This is because the compiler thinks that you are declaring a function called \lstinline|myCell| which returns a \lstinline|SpreadsheetCell| and takes no arguments. The next line doesn't compile because the compiler thinks you are trying to call a method on the function!
+
+\noindent\fbox{%
+  \parbox{\textwidth}{%
+    \begin{center}
+      \textbf{When creating an object on the stack, omit parenthesis for the default constructor.}
+    \end{center}
+  }%
+}
+
+But when using the default constructor to create objects on the heap, you should use the functional syntax:
+
+\begin{lstlisting}
+SpreadsheetCell* myCellp = new SpreadsheetCell(); // Note the function-call syntax
+\end{lstlisting}
+
+\subsubsection{When you need a default constructor}
+
 
 \end{document}

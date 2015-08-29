@@ -12,3 +12,5 @@
 \BOOKMARK [2][-]{subsection.2.1}{Access specifiers}{section.2}% 12
 \BOOKMARK [2][-]{subsection.2.2}{Reminder of syntax}{section.2}% 13
 \BOOKMARK [2][-]{subsection.2.3}{Creating objects on the stack or heap}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.4}{Constructors}{section.2}% 15
+\BOOKMARK [2][-]{subsection.2.5}{Default constructors}{section.2}% 16

@@ -12,3 +12,5 @@
 \contentsline {subsection}{\numberline {2.1}Access specifiers}{6}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Reminder of syntax}{6}{subsection.2.2}
 \contentsline {subsection}{\numberline {2.3}Creating objects on the stack or heap}{6}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Constructors}{7}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Default constructors}{8}{subsection.2.5}
