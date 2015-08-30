@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.6.24)  30 AUG 2015 22:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.6.24)  31 AUG 2015 00:09
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -897,22 +897,22 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 234.
  [7] [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 335.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 338.
 
 [9]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 335.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 338.
  (./notes.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 335.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 335.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 338.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 338.
 Package rerunfilecheck Info: File `notes.out' has not changed.
-(rerunfilecheck)             Checksum: 55376AABD88A733A882A0239EDCFB729;1123.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 335.
+(rerunfilecheck)             Checksum: 999101C454A3BC7D870EB5EAECDDD3A9;1190.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 338.
  ) 
 Here is how much of TeX's memory you used:
- 20572 strings out of 493105
- 385227 string characters out of 6137072
+ 20574 strings out of 493105
+ 385257 string characters out of 6137072
  499446 words of memory out of 5000000
- 23592 multiletter control sequences out of 15000+600000
+ 23593 multiletter control sequences out of 15000+600000
  22046 words of font info for 104 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  34i,6n,58p,10394b,2245s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -924,10 +924,10 @@ e/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf
 fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/share/texlive/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/cm/cmtt12.pfb>
-Output written on notes.pdf (9 pages, 119237 bytes).
+Output written on notes.pdf (9 pages, 119792 bytes).
 PDF statistics:
- 357 PDF objects out of 1000 (max. 8388607)
- 334 compressed objects within 4 object streams
- 179 named destinations out of 1000 (max. 500000)
- 25225 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 363 PDF objects out of 1000 (max. 8388607)
+ 340 compressed objects within 4 object streams
+ 180 named destinations out of 1000 (max. 500000)
+ 25233 words of extra memory for PDF output out of 29859 (max. 10000000)
 
