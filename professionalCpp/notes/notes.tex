@@ -25,6 +25,7 @@
 \usepackage{hyperref}
 \usepackage{cleveref}
 \linespread{1.3}
+\usepackage{tabulary}
 \usepackage{listings}
 \usepackage{xcolor} % for setting colors
 
@@ -231,9 +232,7 @@ delete myCellp; //Don't forget to deallocate memory
 \end{lstlisting}
 
 \subsection{Constructors}
-\begin{itemize}
-  \item Whenever an object is created, one of its constructors \emph{must} be called.
-\end{itemize}
+\textbf{Whenever an object is created, one of its constructors \emph{must} be called.}
 
 Say we had a constructor as follows:
 \begin{lstlisting}
@@ -310,23 +309,33 @@ Once the body of the constructor has been entered, all member objects and parent
 
 The constructor for the parent class is called first. The order in which the constructor calls to the remaining elements in the initialiser lists are executed is determined by the order in which they are declared in the class definition.
 
-%\Cref{tab:initialiserMandatory} shows the objects for which inclusion in the initialiser list is mandatory.
-%\begin{table}[]
-%\centering
-%\begin{tabular}{|l|l|}
-%\hline
-%{\bf Data type}                                               & {\bf Explanation}                                                                                                                         \\ \hline
-%const data members                                            & You cannot legally assign a value to a const variable after it is created. Any value must be supplied at the time of creation             \\ \hline
-%Reference data members                                        & References cannot exist without referring to something.                                                                                   \\ \hline
-%Object data members for which there is no default constructor & C++ attempts to initialize member objects using a default constructor. If no default constructor exists, it cannot initialize the object. \\ \hline
-%Superclasses without default constructors                     & The superclass must be initialised before the constructor begins execution                                                                \\ \hline
-%\end{tabular}
-%\caption{Objects which must be included in the initialiser list}
-%\label{tab:initialiserMandatory}
-%\end{table}
+\Cref{tab:initialiserMandatory} shows the objects for which inclusion in the initialiser list is mandatory.
+\begin{table}
+  \centering
+  \begin{tabulary}{\textwidth}{|L|L|}
+    \hline
+    {\bf Data type} & {\bf Explanation} \\ \hline
+    const data members & You cannot legally assign a value to a const variable after it is created. Any value must be supplied at the time of creation \\ \hline
+    Reference data members & References cannot exist without referring to something. \\ \hline
+    Object data members for which there is no default constructor & C++ attempts to initialize member objects using a default constructor. If no default constructor exists, it cannot initialize the object. \\ \hline
+    Superclasses without default constructors & The superclass must be initialised before the constructor begins execution \\ \hline
+  \end{tabulary}
+  \caption{Objects which must be included in the initialiser list}
+  \label{tab:initialiserMandatory}
+\end{table}
 
 See {\footnotesize\url{http://www.cprogramming.com/tutorial/initialization-lists-c++.html}} for an alternative explanation.
 
+\subsubsection{Copy constructors}
+An example of a copy constructor:
+\begin{lstlisting}
+SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell& src) :
+mValue(src.mValue), mString(src.mString) {
+}
+\end{lstlisting}
+If you don't write a copy constructor, one is not written for you. The one that the compiler writes for you is not always suitable, especially when you have memory being dynamically allocated on the heap from within the object methods. More on this in %\cref{..}
+
+The copy constructor is implicitly called whenever you pass an object by value to a function. It can also be called explicitly like \lstinline|SpreadsheetCell myCell(anotherCell);|.
 \subsection{Default constructors}
 A default constructor is required if you want to be able to declare an object but not initialise it, like \lstinline|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
 
@@ -343,7 +352,7 @@ myCell.setValue(6); // However, this line will not compile.
 \end{lstlisting}
 
 Line 1 does compile. This is because the compiler thinks that you are declaring a function called \lstinline|myCell| which returns a \lstinline|SpreadsheetCell| and takes no arguments. The next line doesn't compile because the compiler thinks you are trying to call a method on the function!
-
+\vspace{\baselineskip}
 \begin{center}
   \noindent\fbox{%
     \parbox{0.9\textwidth}{%
@@ -351,7 +360,7 @@ Line 1 does compile. This is because the compiler thinks that you are declaring 
     }%
   }
 \end{center}
-
+\vspace{\baselineskip}
 But when using the default constructor to create objects on the heap, you should use the functional syntax:
 
 \begin{lstlisting}
@@ -389,5 +398,6 @@ Then either the class \lstinline|cat| must have a default constructor, or every 
 
 \paragraph{Subclasses}
 It is convenient for a superclass to have a default constructor, as this makes the construction of subclasses simpler, as subclasses must always call a constructor of their respective superclass, in which case, having a default constructor for the superclass can be useful.
+
 
 \end{document}
