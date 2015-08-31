@@ -21,7 +21,8 @@ class twoCats
         void addSecondCat (cat theSecondCat);
 };
 
-twoCats::twoCats (cat theFirstCat, cat theSecondCat) : firstCat(theFirstCat), secondCat(theSecondCat)
+twoCats::twoCats (cat theFirstCat, cat theSecondCat) : firstCat(theFirstCat),
+secondCat(theSecondCat)
 {
 }
 

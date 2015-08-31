@@ -13,9 +13,9 @@
 \contentsline {subsection}{\numberline {2.2}Reminder of syntax}{6}{subsection.2.2}
 \contentsline {subsection}{\numberline {2.3}Creating objects on the stack or heap}{6}{subsection.2.3}
 \contentsline {subsection}{\numberline {2.4}Constructors}{7}{subsection.2.4}
-\contentsline {subsection}{\numberline {2.5}Initialiser lists}{7}{subsection.2.5}
-\contentsline {subsection}{\numberline {2.6}Default constructors}{8}{subsection.2.6}
-\contentsline {subsubsection}{\numberline {2.6.1}When you need a default constructor}{8}{subsubsection.2.6.1}
-\contentsline {paragraph}{Arrays}{8}{paragraph*.1}
-\contentsline {paragraph}{Creating objects inside another class}{9}{paragraph*.2}
-\contentsline {paragraph}{Subclasses}{9}{paragraph*.3}
+\contentsline {subsubsection}{\numberline {2.4.1}Initialiser lists}{7}{subsubsection.2.4.1}
+\contentsline {subsection}{\numberline {2.5}Default constructors}{9}{subsection.2.5}
+\contentsline {subsubsection}{\numberline {2.5.1}When you need a default constructor}{9}{subsubsection.2.5.1}
+\contentsline {paragraph}{\numberline {2.5.1.1}Arrays}{9}{paragraph.2.5.1.1}
+\contentsline {paragraph}{\numberline {2.5.1.2}Creating objects inside another class}{10}{paragraph.2.5.1.2}
+\contentsline {paragraph}{\numberline {2.5.1.3}Subclasses}{10}{paragraph.2.5.1.3}

@@ -6,7 +6,8 @@
 \newtheorem{prf}{Proof}[thm]
 \newtheorem{defn}{Definition}[section]
 \newtheorem{exmp}{Example}
-%\setcounter{secnumdepth}{3}
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
 \usepackage{siunitx}
 \usepackage{microtype}
 \usepackage{float}
@@ -198,11 +199,11 @@ Any method of the class can call a protected method and access a protected membe
 \begin{lstlisting}[caption={SpreadsheetCell.h}]
 class SpreadsheetCell {
   public:
-  SpreadsheetCell();
-  ~SpreadsheetCell();
-  double getValue();
+    SpreadsheetCell();
+    ~SpreadsheetCell();
+    double getValue();
   private:
-  double mValue;
+    double mValue;
 };
 \end{lstlisting}
 \begin{lstlisting}[caption={SpreadsheetCell.cpp}]
@@ -269,8 +270,62 @@ SpreadsheetCell::SpreadsheetCell(string initialValue) {
 }
 \end{lstlisting}
 
-\subsection{Initialiser lists}
-\url{http://www.cprogramming.com/tutorial/initialization-lists-c++.html}
+\subsubsection{Initialiser lists}
+Consider a class as follows:
+\begin{lstlisting}
+class SpreadsheetCell {
+  public:
+    SpreadsheetCell();
+    SpreadsheetCell(int mValue, string mString);
+  private;
+    int mValue;
+    string mString;
+}
+\end{lstlisting}
+
+Now one way of implementing the default constructor is as follows:
+\begin{lstlisting}
+SpreadsheetCell::SpreadsheetCell () : mValue(0), mString("") {
+}
+\end{lstlisting}
+
+And the other constructor:
+
+\begin{lstlisting}[caption={C++ gets it right with the name clash}, label={lst:initialiserList}]
+SpreadsheetCell::SpreadsheetCell (int mValue, string mString) : mValue(mValue),
+  mString(mString) {
+}
+\end{lstlisting}
+
+Note that this is different to the following:
+
+\begin{lstlisting}
+SpreadsheetCell::SpreadsheetCell (int mValue, string mString){
+  this->mValue = mValue;
+  this->mString = mString;
+}
+\end{lstlisting}
+
+Once the body of the constructor has been entered, all member objects and parent objects have already been created. So \lstinline|this->mValue = mValue| modifies the value of the existing \lstinline|mValue| object. In listing \ref{lst:initialiserList}, the default constructor for an \lstinline|int| is not called, but it is constructed with the correct value right from the start by calling a non-default constructor. This is more efficient and allows one to initialise member objects by something other than their default constructor.
+
+The constructor for the parent class is called first. The order in which the constructor calls to the remaining elements in the initialiser lists are executed is determined by the order in which they are declared in the class definition.
+
+%\Cref{tab:initialiserMandatory} shows the objects for which inclusion in the initialiser list is mandatory.
+%\begin{table}[]
+%\centering
+%\begin{tabular}{|l|l|}
+%\hline
+%{\bf Data type}                                               & {\bf Explanation}                                                                                                                         \\ \hline
+%const data members                                            & You cannot legally assign a value to a const variable after it is created. Any value must be supplied at the time of creation             \\ \hline
+%Reference data members                                        & References cannot exist without referring to something.                                                                                   \\ \hline
+%Object data members for which there is no default constructor & C++ attempts to initialize member objects using a default constructor. If no default constructor exists, it cannot initialize the object. \\ \hline
+%Superclasses without default constructors                     & The superclass must be initialised before the constructor begins execution                                                                \\ \hline
+%\end{tabular}
+%\caption{Objects which must be included in the initialiser list}
+%\label{tab:initialiserMandatory}
+%\end{table}
+
+See {\footnotesize\url{http://www.cprogramming.com/tutorial/initialization-lists-c++.html}} for an alternative explanation.
 
 \subsection{Default constructors}
 A default constructor is required if you want to be able to declare an object but not initialise it, like \lstinline|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
@@ -289,13 +344,13 @@ myCell.setValue(6); // However, this line will not compile.
 
 Line 1 does compile. This is because the compiler thinks that you are declaring a function called \lstinline|myCell| which returns a \lstinline|SpreadsheetCell| and takes no arguments. The next line doesn't compile because the compiler thinks you are trying to call a method on the function!
 
-\noindent\fbox{%
-  \parbox{0.9\textwidth}{%
-    \begin{center}
+\begin{center}
+  \noindent\fbox{%
+    \parbox{0.9\textwidth}{%
       \textbf{When creating an object on the stack, omit parenthesis for the default constructor.}
-    \end{center}
-  }%
-}
+    }%
+  }
+\end{center}
 
 But when using the default constructor to create objects on the heap, you should use the functional syntax:
 
@@ -307,10 +362,10 @@ SpreadsheetCell* myCellp = new SpreadsheetCell(); // Note the function-call synt
 \paragraph{Arrays}
 If there is no default constructor for \lstinline|SpreadsheetCell|, the following fail:
 
-\begin{lstinline}
-  SpreadsheetCell cells[3]; // FAILS compilation without a default constructor
-  SpreadsheetCell* myCellp = new SpreadsheetCell[10]; // Also FAILS
-\end{lstinline}
+\begin{lstlisting}
+SpreadsheetCell cells[2]; // FAILS compilation without a default constructor
+SpreadsheetCell* myCellp = new SpreadsheetCell[10]; // Also FAILS
+\end{lstlisting}
 
 There is no syntax to specify a different constructor for all elements. For stack based arrays, one can construct each element individually as follows:
 
