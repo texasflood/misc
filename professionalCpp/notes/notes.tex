@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt,oneside]{book}
 %\usepackage{amsthm}
 %\theoremstyle{plain}
 \newtheorem{thm}{Theorem}[section]
@@ -54,12 +54,16 @@
 \author{Anas Syed}
 
 \begin{document}
+\hypersetup{pageanchor=false}
+\pagenumbering{gobble}
 \maketitle
 \tableofcontents
-\newcommand{\sectionbreak}{\clearpage}
+\newcommand{\chapterbreak}{\clearpage}
 
-\section{Basics}
-\subsection{Preprocessor directives}
+\chapter{Basics}
+\pagenumbering{arabic}
+\hypersetup{pageanchor=true}
+\section{Preprocessor directives}
 
 \lstinline|#pragma| is not standard across all compilers, so don't use it.
 
@@ -71,7 +75,7 @@
 #endif
 \end{lstlisting}
 
-\subsection{Casting}
+\section{Casting}
 \begin{enumerate}
   \item \lstinline|bool someBool = (bool)someInt;|
   \item \lstinline|bool someBool = bool(someInt);|
@@ -79,7 +83,7 @@
 \end{enumerate}
 \Cref{itm:static_cast} is considered to be the cleanest.
 
-\subsection{Structs}
+\section{Structs}
 Structs are the same as classes in \verb|C++|, except the default access specifier for a struct is public, whereas for a class it's private. If we define a struct as follows:
 
 \begin{lstlisting}
@@ -111,11 +115,11 @@ struct employee {
 } employee1, employee2;
 typedef struct employee employee;
 \end{lstlisting}
-\subsection{Stack and heap}
+\section{Stack and heap}
 The stack is a Last in First out data structure. If you call a function \lstinline|foo()|, then all of the static variables (those not created using \lstinline|new| or \lstinline|malloc|) in \lstinline|foo| exist in a stack frame. If \lstinline|foo| was called from \lstinline|main|, then you cannot easily change or access the static variables in the stack frame of \lstinline|foo| from within \lstinline|main|, because they are in a different stack frame.
 
 However, if you allocate some dynamic memory to a variable in \lstinline|foo|, then you could access or modify this variable in main.
-\subsubsection{Freeing memory}
+\subsection{Freeing memory}
 When you allocate memory with the \lstinline|new| operator, you must eventually free it with \lstinline|delete|. Note that this even applies to \lstinline|int| objects. For example, the following code has a 4 byte memory leak:
 
 \begin{lstlisting}[caption={Memory leak}]
@@ -156,15 +160,15 @@ int main() {
 }
 \end{lstlisting}
 
-\subsection{Strings}
-\subsubsection{C style}
+\section{Strings}
+\subsection{C style}
 \begin{lstlisting}
 char arrayString[20] = "Hello, World"; //allocates 20 bytes
 char* pointerString = "Hello, World"; //allocates 13 bytes
 \end{lstlisting}
 
 Use \lstinline|#include <cstring>| for standard \verb|C| library functions.
-\subsubsection{C++ style}
+\subsection{C++ style}
 \begin{lstlisting}
 #include <string>
 int main() {
@@ -172,7 +176,7 @@ int main() {
   std::string str2 = str1 + ", World";
 }
 \end{lstlisting}
-\subsection{Exceptions}
+\section{Exceptions}
 \begin{lstlisting}
 #include <iostream>
 #include <stdexcept>
@@ -193,10 +197,10 @@ int main(int argc, char** argv) {
 }
 \end{lstlisting}
 
-\section{Object oriented programming}
-\subsection{Access specifiers}
+\chapter{Object oriented programming}
+\section{Access specifiers}
 Any method of the class can call a protected method and access a protected member. Methods of a subclass can call a protected method or access a protected member of an object.
-\subsection{Reminder of syntax}
+\section{Reminder of syntax}
 \begin{lstlisting}[caption={SpreadsheetCell.h}]
 class SpreadsheetCell {
   public:
@@ -221,7 +225,7 @@ double SpreadsheetCell::getValue() {
   return (mValue);
 }
 \end{lstlisting}
-\subsection{Creating objects on the stack or heap}
+\section{Creating objects on the stack or heap}
 \begin{lstlisting}[caption={Creating objects on the stack}]
 SpreadsheetCell myCell, anotherCell;
 \end{lstlisting}
@@ -231,7 +235,15 @@ SpreadsheetCell* myCellp = new SpreadsheetCell();
 delete myCellp; //Don't forget to deallocate memory
 \end{lstlisting}
 
-\subsection{Constructors}
+\subsection{Using smart pointers}
+\begin{lstlisting}
+#include <memory>
+auto myCatp = std::make_unique<cat>(5); // C++14
+// Equivalent to:
+std::unique_ptr<cat> myCatp(new cat(5)); // C++11
+\end{lstlisting}
+
+\section{Constructors}
 \textbf{Whenever an object is created, one of its constructors \emph{must} be called.}
 
 Say we had a constructor as follows:
@@ -269,7 +281,7 @@ SpreadsheetCell::SpreadsheetCell(string initialValue) {
 }
 \end{lstlisting}
 
-\subsubsection{Initialiser lists}
+\subsection{Initialiser lists}
 Consider a class as follows:
 \begin{lstlisting}
 class SpreadsheetCell {
@@ -326,16 +338,32 @@ The constructor for the parent class is called first. The order in which the con
 
 See {\footnotesize\url{http://www.cprogramming.com/tutorial/initialization-lists-c++.html}} for an alternative explanation.
 
-\subsubsection{Copy constructors}
+\subsection{Copy constructors}
 An example of a copy constructor:
 \begin{lstlisting}
 SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell& src) :
-mValue(src.mValue), mString(src.mString) {
+  mValue(src.mValue), mString(src.mString) {
 }
 \end{lstlisting}
 If you don't write a copy constructor, one is not written for you. The one that the compiler writes for you is not always suitable, especially when you have memory being dynamically allocated on the heap from within the object methods. More on this in %\cref{..}
 
 The copy constructor is implicitly called whenever you pass an object by value to a function. It can also be called explicitly like \lstinline|SpreadsheetCell myCell(anotherCell);|.
+
+The compiler generated copy constructor recursively calls the copy constructor to all object members.
+\subsubsection{What constructors the compiler generates}
+If you define any constructor (including a copy constructor), the compiler won't generate a default constructor, otherwise it will. If you define a copy constructor, the compiler won't generate a copy constructor, otherwise it will.
+\subsection{\texttt{default} and \texttt{delete} for compiler generated constructors (C++11)}
+If we have a class \lstinline|object|, then we can explicitly create or delete the generated constructor or operator in the class definition:
+
+\begin{lstlisting}
+class object {
+  public:
+    object() = default;
+    object(const object& objToBeCopied) = delete;
+    object& operator=(const object& rhs) = delete;
+}
+\end{lstlisting}
+
 \subsection{Default constructors}
 A default constructor is required if you want to be able to declare an object but not initialise it, like \lstinline|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
 
@@ -400,4 +428,49 @@ Then either the class \lstinline|cat| must have a default constructor, or every 
 It is convenient for a superclass to have a default constructor, as this makes the construction of subclasses simpler, as subclasses must always call a constructor of their respective superclass, in which case, having a default constructor for the superclass can be useful.
 
 
+\section{Destructors}
+Objects on the stack are destroyed when they go out of scope, and are destroyed in the order Last In First Out.
+
+\section{Assignment operator}
+The following code assigns \lstinline|myCell| to the object \lstinline|anotherCell| using the assignment operator. If you don't write an assignment operator, C++ writes one for you.
+
+\begin{lstlisting}
+SpreadsheetCell myCell(5), anotherCell;
+anotherCell = myCell; //Assignment
+\end{lstlisting}
+
+This is different to copying because the object is always being initialised when copying, whereas assignment applies only to already created objects.
+
+This is the declaration of the assignment operator:
+
+\begin{lstlisting}
+class SpreadsheetCell {
+  public:
+    SpreadsheetCell& operator=(const SpreadsheetCell& rhs);
+}
+\end{lstlisting}
+
+This returns a reference because assignment operators can be chained. Every definition of the assignment operator must return \lstinline|*this|.
+
+Note the following:
+\begin{lstlisting}
+myCell = anotherCell = aThirdCell;
+// is equivalent to:
+myCell.operator=(anotherCell.operator=(aThirdCell));
+\end{lstlisting}
+
+\section{Distinguishing copying from assignment}
+Note that in the following, the copy constructor is called for \lstinline|anotherCell|:
+\begin{lstlisting}
+SpreadsheetCell anotherCell = myCell;
+\end{lstlisting}
+\section{In class member initialisers}
+Since C++11, you can initialise member variables in the class definition. Before, you could only do this in the constructor, or do it for \lstinline|static const| integral member variables.
+
+
+\sloppy
+\begin{thebibliography}{99}
+  \bibitem[\href{https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/RVO_V_S_std_move?lang=en}{Return value optimisation}]{rvo} 
+    
+\end{thebibliography}
 \end{document}
