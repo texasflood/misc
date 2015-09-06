@@ -4,13 +4,15 @@
 
 class cat {
   public:
+    const int a = 5;
     int height;
-    std::string size = "23e";
-    cat() = default;
+    cat();
     cat (int inputHeight);
     ~cat();
-    //cat& operator=(const cat& rhs) = delete;
 };
+
+cat::cat () : height(0) {
+}
 
 cat::cat (int inputHeight) {
   height = inputHeight;

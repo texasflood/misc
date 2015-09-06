@@ -40,7 +40,9 @@
   keywordstyle=\color{blue}, % keyword color
   stringstyle=\color{red}, % string color
   basicstyle=\ttfamily\lst@ifdisplaystyle\footnotesize\fi,
-  basewidth = {.48em}
+  basewidth = {.48em},
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
 }
 \newcommand*{\diff}{\mathop{}\!\mathbf{d}}
 \newcommand*{\hlinebreak}{\rule{\textwidth}{1pt}}
@@ -59,13 +61,13 @@
 \maketitle
 \tableofcontents
 \newcommand{\chapterbreak}{\clearpage}
-
+\newcommand{\lst}{\lstinline}
 \chapter{Basics}
 \pagenumbering{arabic}
 \hypersetup{pageanchor=true}
 \section{Preprocessor directives}
 
-\lstinline|#pragma| is not standard across all compilers, so don't use it.
+\lst|#pragma| is not standard across all compilers, so don't use it.
 
 \hlinebreak
 \begin{lstlisting}[caption={Prevent circular includes}]
@@ -77,9 +79,9 @@
 
 \section{Casting}
 \begin{enumerate}
-  \item \lstinline|bool someBool = (bool)someInt;|
-  \item \lstinline|bool someBool = bool(someInt);|
-  \item \label{itm:static_cast} \lstinline|bool someBool = static_cast<bool>(someInt);|
+  \item \lst|bool someBool = (bool)someInt;|
+  \item \lst|bool someBool = bool(someInt);|
+  \item \label{itm:static_cast} \lst|bool someBool = static_cast<bool>(someInt);|
 \end{enumerate}
 \Cref{itm:static_cast} is considered to be the cleanest.
 
@@ -116,11 +118,11 @@ struct employee {
 typedef struct employee employee;
 \end{lstlisting}
 \section{Stack and heap}
-The stack is a Last in First out data structure. If you call a function \lstinline|foo()|, then all of the static variables (those not created using \lstinline|new| or \lstinline|malloc|) in \lstinline|foo| exist in a stack frame. If \lstinline|foo| was called from \lstinline|main|, then you cannot easily change or access the static variables in the stack frame of \lstinline|foo| from within \lstinline|main|, because they are in a different stack frame.
+The stack is a Last in First out data structure. If you call a function \lst|foo()|, then all of the static variables (those not created using \lst|new| or \lst|malloc|) in \lst|foo| exist in a stack frame. If \lst|foo| was called from \lst|main|, then you cannot easily change or access the static variables in the stack frame of \lst|foo| from within \lst|main|, because they are in a different stack frame.
 
-However, if you allocate some dynamic memory to a variable in \lstinline|foo|, then you could access or modify this variable in main.
+However, if you allocate some dynamic memory to a variable in \lst|foo|, then you could access or modify this variable in main.
 \subsection{Freeing memory}
-When you allocate memory with the \lstinline|new| operator, you must eventually free it with \lstinline|delete|. Note that this even applies to \lstinline|int| objects. For example, the following code has a 4 byte memory leak:
+When you allocate memory with the \lst|new| operator, you must eventually free it with \lst|delete|. Note that this even applies to \lst|int| objects. For example, the following code has a 4 byte memory leak:
 
 \begin{lstlisting}[caption={Memory leak}]
 int main() {
@@ -128,7 +130,7 @@ int main() {
 }
 \end{lstlisting}
 
-Running \lstinline|valgrind --tool=memcheck ./a.out| gives the error message:
+Running \lst|valgrind --tool=memcheck ./a.out| gives the error message:
 \begin{lstlisting}[language=bash, caption={Valgrind output}]
 ==11934== Memcheck, a memory error detector
 ==11934== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
@@ -164,18 +166,23 @@ int main() {
 \subsection{C style}
 \begin{lstlisting}
 char arrayString[20] = "Hello, World"; //allocates 20 bytes
-char* pointerString = "Hello, World"; //allocates 13 bytes
+char arrayString[] = "Hello, World"; //allocates 13 bytes
+char* pointerString = "Hello, World"; //allocates 13 bytes, deprecated in C++. Should be const char*
+const char* pointerString = "Hello, World"; //allocates 13 bytes
 \end{lstlisting}
 
-Use \lstinline|#include <cstring>| for standard \verb|C| library functions.
+Use \lst|#include <cstring>| for standard \verb|C| library functions.
 \subsection{C++ style}
 \begin{lstlisting}
 #include <string>
 int main() {
   std::string str1 = "Hello";
   std::string str2 = str1 + ", World";
+  std::cout << str2.size() << std::endl; //12
 }
 \end{lstlisting}
+
+Since C++11, there is a new \lst|std::to_string| function which returns an \lst|std::string|, just include \lst|#include <string>|.
 \section{Exceptions}
 \begin{lstlisting}
 #include <iostream>
@@ -197,6 +204,77 @@ int main(int argc, char** argv) {
 }
 \end{lstlisting}
 
+\section{\texttt{auto} and \texttt{decltype} (C++11) and \texttt{decltype(auto)} (C++14)}
+\lst|auto| uses type inference to determine variable type, but it strips away reference and \lst|const| qualifiers.
+
+If we have the following:
+
+\begin{lstlisting}
+const string message = "Test";
+
+const string& foo() {
+  return message;
+}
+auto f1 = foo();
+const auto& f2 = foo();
+decltype(foo()) f3 = foo()
+\end{lstlisting}
+
+Then \lst|f1| has type \lst|string|, and \lst|f2| and \lst|f3| have type \lst|const string&|. However, there is code duplication for \lst|f3|, so the solution is to do
+
+\begin{lstlisting}
+decltype(auto) f4 = foo();
+\end{lstlisting}
+And \lst|f4| has type \lst|const string&|.
+
+\section{\texttt{std::array} (C++11)}
+C++ has provided a thin wrapper around standard arrays in the \lst|array| header.
+
+\begin{lstlisting}
+#include <array>
+
+int main() {
+  std::array<int, 5> a {1,4,6,8,4};
+  a[4] = 99;
+  for (const int& i : a) {
+    std::cout << i << std::endl;
+  }
+  std::cout << a.size() << std::endl;
+}
+\end{lstlisting}
+
+Note that the size provided in the type declaration can be greater than the initialiser list, the extra elements will all be cleared to 0.
+
+\section{Range based \texttt{for} loops (C++11)}
+The following can all be used in a range based \lst|for| loop.
+\begin{lstlisting}
+std::vector<int> a = {1, 3, 5, 23, 52};
+int a[] = {1, 4, 6, 2, 5};
+std::array<int, 3> a {1,4,6,8,4};
+std::string a = "Hello, World";
+char a[] = "Hello, World";
+\end{lstlisting}
+And the \lst|for| loop is written down as follows, and can even create a \lst|const| or reference as the iterating variable:
+\begin{lstlisting}
+for (const int& i : a) {
+  std::cout << i << std::endl;
+}
+// or
+for (const auto& i : a) {
+  std::cout << i << std::endl;
+}
+\end{lstlisting}
+\section{\texttt{nullptr} (C++11)}
+The keyword \lst|NULL| was the standard way to create a null pointer. However, it is just syntactic sugar for the integer literal 0. Since C++11, there is a special keyword \lst|nullptr| which is a pointer type. This can resolve the issue in the following code:
+\begin{lstlisting}[numbers=left]
+void func(char* str) {cout << "char* version" << endl;}
+void func(int i) {cout << "int version" << endl;}
+int main() {
+  func(NULL);
+  return 0;
+}
+\end{lstlisting}
+Clearly, the intention is to call the \lst|char*| version of the function, but because \lst|NULL| is an \lst|int|, the \lst|int| version is called. Running \lst|func(nullptr)| solves the issue.
 \chapter{Object oriented programming}
 \section{Access specifiers}
 Any method of the class can call a protected method and access a protected member. Methods of a subclass can call a protected method or access a protected member of an object.
@@ -317,7 +395,7 @@ SpreadsheetCell::SpreadsheetCell (int mValue, string mString){
 }
 \end{lstlisting}
 
-Once the body of the constructor has been entered, all member objects and parent objects have already been created. So \lstinline|this->mValue = mValue| modifies the value of the existing \lstinline|mValue| object. In listing \ref{lst:initialiserList}, the default constructor for an \lstinline|int| is not called, but it is constructed with the correct value right from the start by calling a non-default constructor. This is more efficient and allows one to initialise member objects by something other than their default constructor.
+Once the body of the constructor has been entered, all member objects and parent objects have already been created. So \lst|this->mValue = mValue| modifies the value of the existing \lst|mValue| object. In listing \ref{lst:initialiserList}, the default constructor for an \lst|int| is not called, but it is constructed with the correct value right from the start by calling a non-default constructor. This is more efficient and allows one to initialise member objects by something other than their default constructor.
 
 The constructor for the parent class is called first. The order in which the constructor calls to the remaining elements in the initialiser lists are executed is determined by the order in which they are declared in the class definition.
 
@@ -347,13 +425,13 @@ SpreadsheetCell::SpreadsheetCell(const SpreadsheetCell& src) :
 \end{lstlisting}
 If you don't write a copy constructor, one is not written for you. The one that the compiler writes for you is not always suitable, especially when you have memory being dynamically allocated on the heap from within the object methods. More on this in %\cref{..}
 
-The copy constructor is implicitly called whenever you pass an object by value to a function. It can also be called explicitly like \lstinline|SpreadsheetCell myCell(anotherCell);|.
+The copy constructor is implicitly called whenever you pass an object by value to a function. It can also be called explicitly like \lst|SpreadsheetCell myCell(anotherCell);|.
 
 The compiler generated copy constructor recursively calls the copy constructor to all object members.
 \subsubsection{What constructors the compiler generates}
 If you define any constructor (including a copy constructor), the compiler won't generate a default constructor, otherwise it will. If you define a copy constructor, the compiler won't generate a copy constructor, otherwise it will.
 \subsection{\texttt{default} and \texttt{delete} for compiler generated constructors (C++11)}
-If we have a class \lstinline|object|, then we can explicitly create or delete the generated constructor or operator in the class definition:
+If we have a class \lst|object|, then we can explicitly create or delete the generated constructor or operator in the class definition:
 
 \begin{lstlisting}
 class object {
@@ -365,7 +443,7 @@ class object {
 \end{lstlisting}
 
 \subsection{Default constructors}
-A default constructor is required if you want to be able to declare an object but not initialise it, like \lstinline|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
+A default constructor is required if you want to be able to declare an object but not initialise it, like \lst|SpreadsheetCell myCell|. Use a default constructor on the stack like so:
 
 \begin{lstlisting}
 SpreadsheetCell myCell;
@@ -379,7 +457,7 @@ SpreadsheetCell myCell(); // WRONG, but will compile.
 myCell.setValue(6); // However, this line will not compile.
 \end{lstlisting}
 
-Line 1 does compile. This is because the compiler thinks that you are declaring a function called \lstinline|myCell| which returns a \lstinline|SpreadsheetCell| and takes no arguments. The next line doesn't compile because the compiler thinks you are trying to call a method on the function!
+Line 1 does compile. This is because the compiler thinks that you are declaring a function called \lst|myCell| which returns a \lst|SpreadsheetCell| and takes no arguments. The next line doesn't compile because the compiler thinks you are trying to call a method on the function!
 \vspace{\baselineskip}
 \begin{center}
   \noindent\fbox{%
@@ -397,7 +475,7 @@ SpreadsheetCell* myCellp = new SpreadsheetCell(); // Note the function-call synt
 
 \subsubsection{When you need a default constructor}
 \paragraph{Arrays}
-If there is no default constructor for \lstinline|SpreadsheetCell|, the following fail:
+If there is no default constructor for \lst|SpreadsheetCell|, the following fail:
 
 \begin{lstlisting}
 SpreadsheetCell cells[2]; // FAILS compilation without a default constructor
@@ -422,7 +500,7 @@ class twoCats {
     cat secondCat;
 };
 \end{lstlisting}
-Then either the class \lstinline|cat| must have a default constructor, or every constructor for \lstinline|twoCats| must initialise \lstinline|firstCat| and \lstinline|secondCat| with a non-default constructor of \lstinline|cat| explicitly.
+Then either the class \lst|cat| must have a default constructor, or every constructor for \lst|twoCats| must initialise \lst|firstCat| and \lst|secondCat| with a non-default constructor of \lst|cat| explicitly.
 
 \paragraph{Subclasses}
 It is convenient for a superclass to have a default constructor, as this makes the construction of subclasses simpler, as subclasses must always call a constructor of their respective superclass, in which case, having a default constructor for the superclass can be useful.
@@ -432,7 +510,7 @@ It is convenient for a superclass to have a default constructor, as this makes t
 Objects on the stack are destroyed when they go out of scope, and are destroyed in the order Last In First Out.
 
 \section{Assignment operator}
-The following code assigns \lstinline|myCell| to the object \lstinline|anotherCell| using the assignment operator. If you don't write an assignment operator, C++ writes one for you.
+The following code assigns \lst|myCell| to the object \lst|anotherCell| using the assignment operator. If you don't write an assignment operator, C++ writes one for you.
 
 \begin{lstlisting}
 SpreadsheetCell myCell(5), anotherCell;
@@ -450,7 +528,7 @@ class SpreadsheetCell {
 }
 \end{lstlisting}
 
-This returns a reference because assignment operators can be chained. Every definition of the assignment operator must return \lstinline|*this|.
+This returns a reference because assignment operators can be chained. Every definition of the assignment operator must return \lst|*this|.
 
 Note the following:
 \begin{lstlisting}
@@ -460,15 +538,43 @@ myCell.operator=(anotherCell.operator=(aThirdCell));
 \end{lstlisting}
 
 \section{Distinguishing copying from assignment}
-Note that in the following, the copy constructor is called for \lstinline|anotherCell|:
+Note that in the following, the copy constructor is called for \lst|anotherCell|:
 \begin{lstlisting}
 SpreadsheetCell anotherCell = myCell;
 \end{lstlisting}
 \section{In class member initialisers}
-Since C++11, you can initialise member variables in the class definition. Before, you could only do this in the constructor, or do it for \lstinline|static const| integral member variables.
+Since C++11, you can initialise member variables in the class definition. Before, you could only do this in the constructor, or do it for \lst|static const| integral member variables.
 
 
 \sloppy
+\section{\texttt{const} and \texttt{static} functions}
+\subsection{\texttt{const} functions}
+A \lst|const| member method is one that does not modify any of the objects member variables (but it may modify other variables passed to it by reference or via a pointer). These are called \emph{inspectors} as opposed to \emph{mutators}. For example:
+
+\begin{lstlisting}
+class cat {
+  public:
+    cat (int inputHeight);
+    int getHeight(int& input) const;
+    void setHeight(int input);
+    int height;
+};
+
+cat::cat (int inputHeight) : height(inputHeight) {
+}
+
+int cat::getHeight (int& input) const {
+  input++; // Allowed
+  height--; // Won't compile
+  return height;
+}
+
+void cat::setHeight(int input) {
+  height = input;
+}
+\end{lstlisting}
+
+If one declares a \lst|const| object, then you may only call \lst|const| member methods on that object.
 \begin{thebibliography}{99}
   \bibitem[\href{https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/RVO_V_S_std_move?lang=en}{Return value optimisation}]{rvo} 
     
