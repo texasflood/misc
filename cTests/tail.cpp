@@ -19,26 +19,15 @@ int main(int argc, char* argv[])
     if (file.is_open())
     {
         std::queue<std::string> last_lines;
-        int i = 1;
-        bool hit_len = false;
+        int i = 0;
         while (getline(file, line))
         {
             last_lines.push(line);
-            if (hit_len)
+            if (i >= tail_len)
             {
                 last_lines.pop();
             }
-            else
-            {
-                if (i == tail_len)
-                {
-                    hit_len = true;
-                }
-                else
-                {
-                    ++i;
-                }
-            }
+            ++i;
         }
         file.close();
 
